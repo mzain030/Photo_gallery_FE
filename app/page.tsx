@@ -12,7 +12,11 @@ export default function Home() {
         </p>
 
         <div className="w-full h-96 overflow-x-auto flex gap-4 border rounded-lg p-4 shadow-lg">
-          <img src="https://picsum.photos/id/1015/400/300" alt="Photo 1" className="h-full rounded" /> <img src="https://picsum.photos/id/1016/400/300" alt="Photo 2" className="h-full rounded" /> <img src="https://picsum.photos/id/1018/400/300" alt="Photo 3" className="h-full rounded" /> <img src="https://picsum.photos/id/1020/400/300" alt="Photo 4" className="h-full rounded" /> <img src="https://picsum.photos/id/1024/400/300" alt="Photo 5" className="h-full rounded" />
+          <img src="https://picsum.photos/id/1015/400/300" alt="Photo 1" className="h-full rounded" />
+           <img src="https://picsum.photos/id/1016/400/300" alt="Photo 2" className="h-full rounded" /> 
+           <img src="https://picsum.photos/id/1018/400/300" alt="Photo 3" className="h-full rounded" /> 
+           <img src="https://picsum.photos/id/1020/400/300" alt="Photo 4" className="h-full rounded" /> 
+           <img src="https://picsum.photos/id/1024/400/300" alt="Photo 5" className="h-full rounded" />
         </div>
       </div>
     </>

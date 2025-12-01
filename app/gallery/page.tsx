@@ -68,14 +68,14 @@ export default function GalleryPage() {
         setIsLoggedIn(!!token);
     }, []);
 
-    useEffect(() => {
-        const raw = localStorage.getItem("gallery_likes");
-        if (raw) setLikes(JSON.parse(raw));
-    }, []);
+    // useEffect(() => {
+    //     const raw = localStorage.getItem("gallery_likes");
+    //     if (raw) setLikes(JSON.parse(raw));
+    // }, []);
 
-    useEffect(() => {
-        localStorage.setItem("gallery_likes", JSON.stringify(likes));
-    }, [likes]);
+    // useEffect(() => {
+    //     localStorage.setItem("gallery_likes", JSON.stringify(likes));
+    // }, [likes]);
 
     const filteredPhotos = photos.filter((p) => {
         if (categoryFilter !== "All" && p.category !== categoryFilter) return false;
@@ -141,7 +141,7 @@ export default function GalleryPage() {
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="flex text-black flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                 <h1 className="text-2xl md:text-3xl font-bold text-sky-700">My Photo Gallery</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-sky-700">My Photo Gallery</h1>
                 <div className="flex flex-wrap items-center gap-3">
                     Search:<input type="search" placeholder="Search..." value={query} onChange={(e) => setQuery(e.target.value)}
                         className="px-3 py-2 rounded-md text-black border border-blacks-300 focus:outline-none focus:ring focus:border-sky-300 w-64" />
@@ -152,7 +152,12 @@ export default function GalleryPage() {
                         className="px-3 py-2 rounded-md border border-gray-300 text-sm">Reset</button> </div>
 
                 <div className="flex justify-between items-center mb-6">
-                    <Link href="/login" className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Logout</Link>
+                    <Link href="/login"
+                        onClick={() => {
+                            localStorage.removeItem("access_token");
+                            localStorage.removeItem("refresh_token");
+                        }}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Logout</Link>
                 </div>
             </div>
 
