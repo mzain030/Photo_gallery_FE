@@ -1,8 +1,12 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
+
+interface RefreshResponse {
+  access: string;
+}
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://127.0.0.1:8000/api/",
-
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("access_token");
     if (token) {
@@ -12,41 +16,31 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithReauth = async (args, api, extraOptions) => {
-  let result: any = await baseQuery(args, api, extraOptions);
+const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}> =
+  async (args, api, extraOptions) => {
+    let result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 401) {
-    console.log("Access token expired... Trying refresh");
+    if (result?.error?.status === 401) {
+      const refresh_token = localStorage.getItem("refresh_token");
+      if (refresh_token) {
+        const refreshResult = await baseQuery(
+          { url: "auth/refresh/", method: "POST", body: { refresh: refresh_token } },
+          api,
+          extraOptions
+        ) as { data?: RefreshResponse };
 
-    const refresh_token = localStorage.getItem("refresh_token");
-
-    // If refresh token exists
-    if (refresh_token) {
-      const refreshResult: any = await baseQuery(
-        {
-          url: "auth/refresh/",
-          method: "POST",
-          body: { refresh: refresh_token },
-        },
-        api,
-        extraOptions
-      );
-
-      if (refreshResult?.data) {
-        // Save new access token
-        localStorage.setItem("access_token", refreshResult.data.access);
-
-        // Retry original request with new token
-        result = await baseQuery(args, api, extraOptions);
-      } else {
-        console.log("Refresh failed. Logging out...");
-        localStorage.clear();
+        if (refreshResult?.data?.access) {
+          localStorage.setItem("access_token", refreshResult.data.access);
+          result = await baseQuery(args, api, extraOptions);
+        } else {
+          localStorage.clear();
+          window.location.href = "/login"; // force logout
+        }
       }
     }
-  }
 
-  return result;
-};
+    return result;
+  };
 
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -54,5 +48,3 @@ export const apiSlice = createApi({
   tagTypes: ["Auth"],
   endpoints: () => ({}),
 });
-
-

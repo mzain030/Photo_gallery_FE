@@ -1,4 +1,3 @@
-
 import { apiSlice } from "./apiSlice";
 
 export const authApi = apiSlice.injectEndpoints({
@@ -20,7 +19,6 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-
           localStorage.setItem("access_token", data.access);
           localStorage.setItem("refresh_token", data.refresh);
         } catch (err) {
@@ -28,7 +26,11 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+
+    getUser: builder.query<{ id: number; name: string; email: string }, void>({
+      query: () => "auth/user/",
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation } = authApi;
+export const { useLoginMutation, useSignupMutation, useGetUserQuery } = authApi;
